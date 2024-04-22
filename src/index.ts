@@ -1,6 +1,6 @@
 // Import necessary libraries
 import { v4 as uuidv4 } from "uuid";
-import { Server, StableBTreeMap, Principal } from "azle";
+import { Server, StableBTreeMap } from "azle";
 import express from "express";
 
 // Define the Member class to represent church members
@@ -232,6 +232,49 @@ export default Server(() => {
       });
     }
   });
+
+  // Endpoint for retrieving a specific member
+  app.get("/members/:id", (req, res) => {
+    const member = membersStorage.get(req.params.id);
+    if (!member) {
+      res.status(404).json({ error: "Member not found" });
+      return;
+    }
+    res.status(200).json(member);
+  });
+
+  // Endpoint for updating a specific member
+  app.put("/members/:id", (req, res) => {
+    const memberId = req.params.id;
+    const member = membersStorage.get(memberId);
+    if (!member) {
+      res.status(404).json({ error: "Member not found" });
+      return;
+    }
+    const { name, contact, membershipStatus } = req.body;
+    if (!name || !contact || !membershipStatus) {
+      res.status(400).json({ error: "Incomplete member data" });
+      return;
+    }
+    member.name = name;
+    member.contact = contact;
+    member.membershipStatus = membershipStatus;
+    membersStorage.insert(memberId, member);
+    res.status(200).json({ message: "Member updated successfully", member });
+  });
+
+
+  // Endpoint for deleting a specific member
+  app.delete("/members/:id", (req, res) => {
+    const member = membersStorage.get(req.params.id);
+    if (!member) {
+      res.status(404).json({ error: "Member not found" });
+      return;
+    }
+    membersStorage.remove(req.params.id);
+    res.status(200).json({ message: "Member deleted successfully" });
+  });
+
 
   // Endpoint for retrieving all events
   app.get("/events", (req, res) => {
