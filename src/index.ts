@@ -376,7 +376,7 @@ export default Server(() => {
   });
 
   // Endpoint for creating a new prayer request
-  app.post("/prayer-requests", (req, res) => {
+  app.post("/prayerRequests", (req, res) => {
     // Validate input data for all fields at once
     if (
       !req.body.memberId ||
@@ -413,7 +413,7 @@ export default Server(() => {
   });
 
   // Endpoint for retrieving all prayer requests
-  app.get("/prayer-requests", (req, res) => {
+  app.get("/prayerRequests", (req, res) => {
     try {
       // Attempt to retrieve all prayer request data from storage
       const prayerRequests = prayerRequestsStorage.values();
